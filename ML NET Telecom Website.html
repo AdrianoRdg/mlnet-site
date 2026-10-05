@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML NET - Ultravelocidade em Fibra Óptica</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#2B2D68',      /* Dark Slate Blue / Navy */
+                            navyDark: '#1E204A',  /* Darker Navy for gradients/hovers */
+                            navyLight: '#3D3F82', /* Lighter Navy for subtle backgrounds */
+                            red: '#DC2628',       /* Crimson / Bright Red */
+                            redHover: '#B91C1C',  /* Dark Crimson */
+                            redLight: '#FEE2E2',  /* Soft Red tint */
+                            bgLight: '#F8F9FD'    /* Soft background grey-blue */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-red': '0 0 25px -5px rgba(220, 38, 40, 0.4)',
+                        'glow-navy': '0 0 25px -5px rgba(43, 45, 104, 0.3)',
+                        'card-hover': '0 20px 30px -10px rgba(43, 45, 104, 0.12)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar & gauge styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8F9FD;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2B2D68;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #DC2628;
+        }
+        
+        /* Pulse Animation for CTA Badge */
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.03); }
+        }
+        .animate-pulse-red {
+            animation: pulse-red 2.5s infinite ease-in-out;
+        }
+
+        /* Speed Gauge Dial Animation */
+        .gauge-circle {
+            transition: stroke-dashoffset 0.8s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-brand-bgLight text-slate-800 font-sans antialiased selection:bg-brand-red selection:text-white">
+
+    <!-- TOP NOTIFICATION BAR -->
+    <div class="bg-brand-navy text-white text-xs md:text-sm py-2 px-4 border-b border-brand-navyLight/40">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <span class="flex items-center gap-1.5 font-medium"><i class="fa-solid fa-bolt text-brand-red"></i> <b>Super Oferta:</b> 700 Mega por R$ 99,90/mês</span>
+                <span class="hidden md:inline-block text-slate-400">|</span>
+                <span class="hidden md:inline-flex items-center gap-1 text-slate-300"><i class="fa-solid fa-location-dot text-brand-red"></i> Araguaína e Região</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="tel:08000000000" class="hover:text-brand-red transition-colors flex items-center gap-1 font-semibold"><i class="fa-solid fa-phone text-xs"></i> 0800 591 2026</a>
+                <a href="#central" class="hidden sm:inline-block hover:text-brand-red transition-colors">Segunda Via de Boleto</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- LOGO: Brand Color Scheme Integration (#2B2D68 Navy + #DC2628 Red + White Negative Space) -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 bg-brand-navy rounded-xl flex items-center justify-center text-white shadow-md relative overflow-hidden group-hover:scale-105 transition-transform">
+                    <!-- Wifi Symbol Element -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand-navy to-brand-navyDark"></div>
+                    <svg class="w-7 h-7 text-brand-red relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <line x1="12" y1="20" x2="12.01" y2="20" stroke-width="3.5"></line>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-extrabold tracking-tight leading-none">
+                        <span class="text-brand-navy">ML</span><span class="text-brand-red">NET</span>
+                    </span>
+                    <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mt-0.5">Telecomunicações</span>
+                </div>
+            </a>
+
+            <!-- DESKTOP NAV LINKS -->
+            <nav class="hidden lg:flex items-center space-x-8 font-semibold text-slate-700 text-sm">
+                <a href="#inicio" class="hover:text-brand-red transition-colors text-brand-navy font-bold">Início</a>
+                <a href="#planos" class="hover:text-brand-red transition-colors">Planos para Você</a>
+                <a href="#empresas" class="hover:text-brand-red transition-colors">Para Empresas</a>
+                <a href="#diferenciais" class="hover:text-brand-red transition-colors">Por que ML NET?</a>
+                <a href="#monte-seu-plano" class="hover:text-brand-red transition-colors">Monte seu Plano</a>
+                <a href="#teste-velocidade" class="hover:text-brand-red transition-colors">Teste de Velocidade</a>
+            </nav>
+
+            <!-- ACTION BUTTONS -->
+            <div class="hidden sm:flex items-center space-x-3">
+                <a href="#central" class="px-4 py-2.5 rounded-xl border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white font-bold text-sm transition-all duration-200">
+                    <i class="fa-solid fa-user-circle mr-1.5"></i> Área do Cliente
+                </a>
+                <a href="#planos" class="px-5 py-2.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-md hover:shadow-glow-red transition-all duration-200 transform hover:-translate-y-0.5">
+                    Assine Já
+                </a>
+            </div>
+
+            <!-- MOBILE MENU BUTTON -->
+            <button id="mobile-menu-btn" class="lg:hidden text-brand-navy p-2 rounded-lg hover:bg-slate-100 focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- MOBILE NAV MENU -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-3">
+            <a href="#inicio" class="block py-2 text-brand-navy font-bold hover:text-brand-red">Início</a>
+            <a href="#planos" class="block py-2 text-slate-600 hover:text-brand-red font-medium">Planos para Você</a>
+            <a href="#empresas" class="block py-2 text-slate-600 hover:text-brand-red font-medium">Para Empresas</a>
+            <a href="#diferenciais" class="block py-2 text-slate-600 hover:text-brand-red font-medium">Por que ML NET?</a>
+            <a href="#monte-seu-plano" class="block py-2 text-slate-600 hover:text-brand-red font-medium">Monte seu Plano</a>
+            <a href="#teste-velocidade" class="block py-2 text-slate-600 hover:text-brand-red font-medium">Teste de Velocidade</a>
+            <div class="pt-4 border-t border-slate-100 flex flex-col space-y-2">
+                <a href="#central" class="w-full text-center py-2.5 rounded-xl border border-brand-navy text-brand-navy font-bold text-sm">Área do Cliente</a>
+                <a href="#planos" class="w-full text-center py-2.5 rounded-xl bg-brand-red text-white font-bold text-sm">Assine Já</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="inicio" class="relative bg-gradient-to-br from-brand-navy via-brand-navy to-brand-navyDark text-white pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden">
+        <!-- Background Pattern Decorators -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#DC2628_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-red/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-navyLight/50 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Hero Text Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <!-- Glassmorphism Promo Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-semibold animate-pulse-red">
+                        <span class="bg-brand-red text-white text-xs uppercase px-2 py-0.5 rounded-full font-extrabold">Destaque</span>
+                        <span>700 MEGA por apenas <strong class="text-brand-red">R$ 99,90/mês</strong></span>
+                        <i class="fa-solid fa-chevron-right text-xs text-brand-red"></i>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                        A Conexão que <br class="hidden sm:inline">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-brand-red">Impulsiona Seu Mundo</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-slate-300 max-w-2xl font-light">
+                        Navegue com <strong class="text-white font-semibold">100% Fibra Óptica</strong> até a sua casa. Menor latência para games, estabilidade total para home office e streaming em 4K sem interrupções.
+                    </p>
+
+                    <!-- QUICK COVERAGE CHECKER FORM -->
+                    <div class="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/15 max-w-xl mx-auto lg:mx-0 shadow-2xl">
+                        <form id="coverage-form" onsubmit="event.preventDefault(); checkCoverage();" class="flex flex-col sm:flex-row gap-2">
+                            <div class="relative flex-1">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-location-dot text-brand-red"></i>
+                                </div>
+                                <input type="text" id="cep-input" placeholder="Digite seu Bairro ou CEP em Araguaína" required class="w-full pl-10 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-red">
+                            </div>
+                            <button type="submit" class="px-6 py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-lg hover:shadow-glow-red transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+                                <span>Consultar Cobertura</span>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </form>
+                        <div id="coverage-result" class="mt-2 text-xs text-slate-300 hidden font-medium"></div>
+                    </div>
+
+                    <!-- Key Bullet Highlights -->
+                    <div class="pt-4 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 text-slate-300 text-xs sm:text-sm font-medium">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-brand-red text-base"></i>
+                            <span>Instalação Grátis</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-brand-red text-base"></i>
+                            <span>Wi-Fi 6 Power</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-brand-red text-base"></i>
+                            <span>Ultra Low Ping</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Visual Box -->
+                <div class="lg:col-span-5 relative flex justify-center">
+                    <div class="relative w-full max-w-md bg-gradient-to-b from-white/10 to-white/5 p-6 rounded-3xl border border-white/20 backdrop-blur-xl shadow-2xl">
+                        <!-- Floating Speed Card Badge -->
+                        <div class="bg-white rounded-2xl p-5 text-slate-900 shadow-xl mb-4 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-brand-red/10 rounded-bl-full pointer-events-none"></div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-brand-red">Plano Mais Vendido</span>
+                                    <h3 class="text-3xl font-extrabold text-brand-navy">700 MEGA</h3>
+                                </div>
+                                <span class="bg-brand-navy text-white text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-wifi text-brand-red mr-1"></i> Wi-Fi 6</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-4">Com desconto automático por pontualidade e App de Filmes incluso.</p>
+                            <div class="flex items-baseline justify-between border-t border-slate-100 pt-3">
+                                <div>
+                                    <span class="text-xs text-slate-400 line-through">R$ 109,90</span>
+                                    <div class="text-2xl font-black text-brand-navy">R$ 99,<span class="text-lg">90</span><span class="text-xs font-normal text-slate-500">/mês</span></div>
+                                </div>
+                                <button onclick="openModal('700 MEGA', '99,90')" class="px-4 py-2 bg-brand-red hover:bg-brand-redHover text-white font-bold text-xs rounded-xl shadow transition">
+                                    Contratar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Live Network Stats Mini Grid -->
+                        <div class="grid grid-cols-2 gap-3 text-center">
+                            <div class="bg-white/10 p-3.5 rounded-xl border border-white/10">
+                                <div class="text-2xl font-black text-white flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-gamepad text-brand-red text-lg"></i> &lt; 8ms
+                                </div>
+                                <span class="text-[11px] text-slate-300 font-medium">Ping em Servidores</span>
+                            </div>
+                            <div class="bg-white/10 p-3.5 rounded-xl border border-white/10">
+                                <div class="text-2xl font-black text-white flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-gauge-high text-brand-red text-lg"></i> 99.9%
+                                </div>
+                                <span class="text-[11px] text-slate-300 font-medium">Uptime da Rede</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PLANS SECTION -->
+    <section id="planos" class="py-20 bg-brand-bgLight">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-brand-red font-bold uppercase text-xs tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Planos de Ultravelocidade</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-navy mt-3">Escolha a Velocidade Ideal Para Sua Casa</h2>
+                <p class="text-slate-600 mt-2 text-base">Todas as nossas conexões são 100% Fibra Óptica, sem franquia de consumo e com roteador incluso.</p>
+
+                <!-- Plan Toggle Buttons -->
+                <div class="mt-8 inline-flex p-1.5 rounded-2xl bg-slate-200/80 border border-slate-300/60">
+                    <button id="btn-residencial" onclick="switchPlans('residencial')" class="px-6 py-2.5 rounded-xl text-sm font-bold bg-brand-navy text-white shadow-md transition-all duration-200">
+                        <i class="fa-solid fa-house mr-1.5"></i> Residencial
+                    </button>
+                    <button id="btn-empresarial" onclick="switchPlans('empresarial')" class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:text-brand-navy transition-all duration-200">
+                        <i class="fa-solid fa-briefcase mr-1.5"></i> Empresarial
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESIDENTIAL PLANS GRID -->
+            <div id="grid-residencial" class="grid md:grid-cols-3 gap-8 items-stretch">
+                
+                <!-- PLAN 1: 500 MEGA -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between relative group">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Essencial</span>
+                            <i class="fa-solid fa-wifi text-slate-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-brand-navy">500 <span class="text-lg font-bold">MEGA</span></h3>
+                        <p class="text-xs text-slate-500 mt-1">Perfeito para estudos, redes sociais e navegação do dia a dia.</p>
+                        
+                        <div class="my-6 py-4 border-y border-slate-100">
+                            <div class="flex items-baseline">
+                                <span class="text-sm font-bold text-slate-400 mr-1">R$</span>
+                                <span class="text-4xl font-black text-brand-navy">89</span>
+                                <span class="text-lg font-extrabold text-brand-navy">,90</span>
+                                <span class="text-xs font-semibold text-slate-500 ml-1">/mês</span>
+                            </div>
+                            <span class="text-[11px] text-brand-navy font-medium block mt-1"><i class="fa-solid fa-circle-check text-brand-red mr-1"></i> Desconto por pontualidade incluso</span>
+                        </div>
+
+                        <ul class="space-y-3.5 text-xs sm:text-sm text-slate-600 mb-8">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>Roteador Wi-Fi 5 Dual Band Grátis</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>100% Download e Upload Simétrico</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>Instalação 100% Gratuita</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>Acesso ao App TMK/ML Movies</span></li>
+                        </ul>
+                    </div>
+                    <button onclick="openModal('500 MEGA', '89,90')" class="w-full py-3.5 rounded-xl border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white font-bold text-sm transition-all duration-200">
+                        Assinar Agora
+                    </button>
+                </div>
+
+                <!-- PLAN 2: 700 MEGA (FEATURED) -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-brand-red shadow-xl hover:shadow-glow-red transition-all duration-300 flex flex-col justify-between relative transform md:-translate-y-2 group">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-red text-white text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow">
+                        <i class="fa-solid fa-star text-amber-300 mr-1"></i> Mais Popular
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-4 mt-2">
+                            <span class="bg-brand-red/10 text-brand-red text-xs font-bold px-3 py-1 rounded-full uppercase">Ultra Conexão</span>
+                            <i class="fa-solid fa-bolt text-brand-red text-xl"></i>
+                        </div>
+                        <h3 class="text-4xl font-extrabold text-brand-navy">700 <span class="text-xl font-bold">MEGA</span></h3>
+                        <p class="text-xs text-slate-500 mt-1">Ideal para famílias que assistem filmes em 4K e jogam online ao mesmo tempo.</p>
+                        
+                        <div class="my-6 py-4 border-y border-slate-100 bg-slate-50/50 rounded-2xl px-3">
+                            <div class="flex items-baseline">
+                                <span class="text-sm font-bold text-slate-400 mr-1">R$</span>
+                                <span class="text-5xl font-black text-brand-navy">99</span>
+                                <span class="text-xl font-extrabold text-brand-navy">,90</span>
+                                <span class="text-xs font-semibold text-slate-500 ml-1">/mês</span>
+                            </div>
+                            <span class="text-[11px] text-brand-red font-bold block mt-1"><i class="fa-solid fa-shield-halved mr-1"></i> R$ 10,00 de Desconto por Pontualidade</span>
+                        </div>
+
+                        <ul class="space-y-3.5 text-xs sm:text-sm text-slate-700 font-medium mb-8">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-red text-base"></i> <span>Roteador <b>Wi-Fi 6 Power</b> Alta Cobertura</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-red text-base"></i> <span><b>Telemedicina 24h</b> Incluso para família</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-red text-base"></i> <span>Streaming de Música <b>Deezer Premium</b></span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-red text-base"></i> <span>Prioridade de Ping Gamer (Cache Local)</span></li>
+                        </ul>
+                    </div>
+                    <button onclick="openModal('700 MEGA', '99,90')" class="w-full py-4 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-extrabold text-sm shadow-lg hover:shadow-glow-red transition-all duration-200">
+                        Assinar com Desconto
+                    </button>
+                </div>
+
+                <!-- PLAN 3: 1 GIGA -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between relative group">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Gamer & Max</span>
+                            <i class="fa-solid fa-crown text-amber-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-brand-navy">1 GIGA <span class="text-sm font-semibold text-slate-400">(1000M)</span></h3>
+                        <p class="text-xs text-slate-500 mt-1">Velocidade extrema para casas inteligentes, criadores de conteúdo e gamers exigentes.</p>
+                        
+                        <div class="my-6 py-4 border-y border-slate-100">
+                            <div class="flex items-baseline">
+                                <span class="text-sm font-bold text-slate-400 mr-1">R$</span>
+                                <span class="text-4xl font-black text-brand-navy">149</span>
+                                <span class="text-lg font-extrabold text-brand-navy">,90</span>
+                                <span class="text-xs font-semibold text-slate-500 ml-1">/mês</span>
+                            </div>
+                            <span class="text-[11px] text-brand-navy font-medium block mt-1"><i class="fa-solid fa-circle-check text-brand-red mr-1"></i> Desconto automático por pontualidade</span>
+                        </div>
+
+                        <ul class="space-y-3.5 text-xs sm:text-sm text-slate-600 mb-8">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span><b>Wi-Fi 6 Mesh</b> Dual Unit (Zero pontos cegos)</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>Escolha: <b>Max</b> ou <b>Disney+</b> incluso</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>Telemedicina + Deezer Música</span></li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-red font-bold"></i> <span>Atendimento VIP e Instalação Express</span></li>
+                        </ul>
+                    </div>
+                    <button onclick="openModal('1 GIGA', '149,90')" class="w-full py-3.5 rounded-xl border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white font-bold text-sm transition-all duration-200">
+                        Assinar Agora
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- EMPRESARIAL PLANS GRID (HIDDEN BY DEFAULT) -->
+            <div id="grid-empresarial" class="hidden grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- CORPORATE PLAN 1 -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-md hover:shadow-card-hover transition">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="bg-brand-navy/10 text-brand-navy text-xs font-bold px-3 py-1 rounded-full uppercase">Pequenas Empresas</span>
+                        <i class="fa-solid fa-building text-brand-navy text-xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-extrabold text-brand-navy">600 MEGA Pro</h3>
+                    <p class="text-xs text-slate-500 mt-1">Conexão estável com IP dinâmico prioritário para escritórios e lojas.</p>
+                    <div class="my-6 py-4 border-y border-slate-100">
+                        <div class="flex items-baseline">
+                            <span class="text-sm font-bold text-slate-400 mr-1">R$</span>
+                            <span class="text-4xl font-black text-brand-navy">199</span>
+                            <span class="text-lg font-extrabold text-brand-navy">,90</span>
+                            <span class="text-xs font-semibold text-slate-500 ml-1">/mês</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm text-slate-600 mb-8">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red font-bold"></i> SLA de atendimento reduzido (até 8h)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red font-bold"></i> Roteador Básico Corporativo</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red font-bold"></i> Emissão de Nota Fiscal PJ</li>
+                    </ul>
+                    <button onclick="openModal('600 MEGA Pro PJ', '199,90')" class="w-full py-3.5 rounded-xl bg-brand-navy hover:bg-brand-navyDark text-white font-bold text-sm transition">
+                        Solicitar Proposta PJ
+                    </button>
+                </div>
+
+                <!-- CORPORATE PLAN 2 -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-brand-navy shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Link Dedicado</span>
+                        <i class="fa-solid fa-network-wired text-brand-red text-xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-extrabold text-brand-navy">1 GIGA Corporate</h3>
+                    <p class="text-xs text-slate-500 mt-1">Banda 100% garantida com IP Fixo incluso e suporte 24/7.</p>
+                    <div class="my-6 py-4 border-y border-slate-100">
+                        <div class="flex items-baseline">
+                            <span class="text-sm font-bold text-slate-400 mr-1">R$</span>
+                            <span class="text-4xl font-black text-brand-navy">399</span>
+                            <span class="text-lg font-extrabold text-brand-navy">,90</span>
+                            <span class="text-xs font-semibold text-slate-500 ml-1">/mês</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm text-slate-600 mb-8">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red font-bold"></i> 1 IP Fixo IPv4 Incluso</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red font-bold"></i> SLA Garantido em Contrato (até 4h)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red font-bold"></i> Gerente de Conta Exclusivo</li>
+                    </ul>
+                    <button onclick="openModal('1 GIGA Corporate', '399,90')" class="w-full py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm transition">
+                        Falar com Consultor PJ
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE PLAN BUILDER SECTION -->
+    <section id="monte-seu-plano" class="py-20 bg-white border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-brand-red font-bold uppercase text-xs tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Simulador Personalizado</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-navy">Monte o Plano Perfeito Para Suas Necessidades</h2>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Selecione a velocidade de internet desejada e adicione serviços de valor agregado como plataformas de streaming, telemedicina e equipamento extra de cobertura Wi-Fi.
+                    </p>
+                    <div class="p-4 bg-brand-bgLight rounded-2xl border border-slate-200 text-xs text-slate-500 flex items-start gap-3">
+                        <i class="fa-solid fa-lightbulb text-brand-red text-lg mt-0.5"></i>
+                        <span>Combine 2 ou mais adicionais e ganhe desconto na mensalidade dos serviços escolhidos!</span>
+                    </div>
+                </div>
+
+                <!-- Customizer Interactive Card Widget -->
+                <div class="lg:col-span-7 bg-brand-navy rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-red/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- Step 1: Base Speed Selection -->
+                    <div class="mb-8">
+                        <label class="block text-xs font-bold uppercase text-slate-300 tracking-wider mb-3">1. Escolha a Velocidade Base:</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" onclick="setCustomSpeed(500, 89.90, this)" class="custom-speed-btn active p-3 sm:p-4 rounded-xl border-2 border-brand-red bg-white/10 text-center transition">
+                                <span class="block text-lg font-black">500M</span>
+                                <span class="text-xs text-slate-300">R$ 89,90</span>
+                            </button>
+                            <button type="button" onclick="setCustomSpeed(700, 99.90, this)" class="custom-speed-btn p-3 sm:p-4 rounded-xl border border-white/20 hover:border-white/40 bg-white/5 text-center transition">
+                                <span class="block text-lg font-black">700M</span>
+                                <span class="text-xs text-slate-300">R$ 99,90</span>
+                            </button>
+                            <button type="button" onclick="setCustomSpeed(1000, 149.90, this)" class="custom-speed-btn p-3 sm:p-4 rounded-xl border border-white/20 hover:border-white/40 bg-white/5 text-center transition">
+                                <span class="block text-lg font-black">1 GIGA</span>
+                                <span class="text-xs text-slate-300">R$ 149,90</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Add-on SVAs -->
+                    <div class="mb-8">
+                        <label class="block text-xs font-bold uppercase text-slate-300 tracking-wider mb-3">2. Adicione Serviços Opcionais:</label>
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" onchange="calculateCustomTotal()" value="15.00" data-name="Telemedicina Familiar" class="sva-addon w-4 h-4 rounded text-brand-red focus:ring-0">
+                                    <span class="text-xs sm:text-sm font-medium"><i class="fa-solid fa-user-doctor text-brand-red mr-1.5"></i> Telemedicina Familiar 24h</span>
+                                </div>
+                                <span class="text-xs text-slate-300 font-bold">+ R$ 15,00/mês</span>
+                            </label>
+
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" onchange="calculateCustomTotal()" value="20.00" data-name="Deezer Music Premium" class="sva-addon w-4 h-4 rounded text-brand-red focus:ring-0">
+                                    <span class="text-xs sm:text-sm font-medium"><i class="fa-solid fa-music text-brand-red mr-1.5"></i> Deezer Music Premium</span>
+                                </div>
+                                <span class="text-xs text-slate-300 font-bold">+ R$ 20,00/mês</span>
+                            </label>
+
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" onchange="calculateCustomTotal()" value="29.90" data-name="Ponto Wi-Fi Mesh Extra" class="sva-addon w-4 h-4 rounded text-brand-red focus:ring-0">
+                                    <span class="text-xs sm:text-sm font-medium"><i class="fa-solid fa-wifi text-brand-red mr-1.5"></i> Ponto Extra Wi-Fi 6 Mesh</span>
+                                </div>
+                                <span class="text-xs text-slate-300 font-bold">+ R$ 29,90/mês</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Total Price Calculation Summary -->
+                    <div class="pt-6 border-t border-white/15 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div>
+                            <span class="text-xs text-slate-300 block">Total Mensal Estimado:</span>
+                            <div class="text-3xl font-black text-white">
+                                R$ <span id="custom-total-price">89,90</span><span class="text-xs font-normal text-slate-300">/mês</span>
+                            </div>
+                        </div>
+                        <button onclick="subscribeCustomPlan()" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-extrabold text-sm shadow-lg hover:shadow-glow-red transition duration-200">
+                            Assinar Plano Personalizado
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- DIFFERENTIATION SECTION -->
+    <section id="diferenciais" class="py-20 bg-brand-bgLight">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-red font-bold uppercase text-xs tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Por Que Escolher a ML NET?</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-navy mt-3">Tecnologia de Ponta e Respeito ao Cliente</h2>
+                <p class="text-slate-600 mt-2 text-base">Infraestrutura robusta projetada para entregar a melhor experiência de conexão da região.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- FEATURE 1 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-navy text-white flex items-center justify-center text-xl mb-4 shadow">
+                        <i class="fa-solid fa-network-wired text-brand-red"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-navy mb-2">100% Fibra Óptica</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Sua conexão chega em fibra do nosso Data Center até o roteador dentro da sua casa, sem perdas por interferências elétricas ou do tempo.
+                    </p>
+                </div>
+
+                <!-- FEATURE 2 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-navy text-white flex items-center justify-center text-xl mb-4 shadow">
+                        <i class="fa-solid fa-server text-brand-red"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-navy mb-2">Servidores Locais (CDNs)</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Hospedagem própria de conteúdo da Netflix, Google, Meta e Akamai na região. Menos tempo de carregamento e ping super reduzido em jogos.
+                    </p>
+                </div>
+
+                <!-- FEATURE 3 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-navy text-white flex items-center justify-center text-xl mb-4 shadow">
+                        <i class="fa-solid fa-percent text-brand-red"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-navy mb-2">Desconto por Pontualidade</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Valorizamos sua fidelidade! Efetuando o pagamento da sua fatura até o vencimento, você garante até R$ 10,00 de desconto automático mensal.
+                    </p>
+                </div>
+
+                <!-- FEATURE 4 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-navy text-white flex items-center justify-center text-xl mb-4 shadow">
+                        <i class="fa-solid fa-wifi text-brand-red"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-navy mb-2">Roteadores Wi-Fi 6</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Equipamentos de alta tecnologia capazes de gerenciar múltiplos dispositivos conectados simultaneamente sem queda de velocidade.
+                    </p>
+                </div>
+
+                <!-- FEATURE 5 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-navy text-white flex items-center justify-center text-xl mb-4 shadow">
+                        <i class="fa-solid fa-headset text-brand-red"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-navy mb-2">Suporte Local Agilizado</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Atendimento humano, rápido e sem burocracia. Nossos técnicos estão prontos para atender você em Araguaína e regiões com agilidade.
+                    </p>
+                </div>
+
+                <!-- FEATURE 6 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-navy text-white flex items-center justify-center text-xl mb-4 shadow">
+                        <i class="fa-solid fa-shield-halved text-brand-red"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-navy mb-2">Sem Franquia de Dados</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Navegue, faça downloads e assista vídeos ilimitadamente. A ML NET garante utilização ilimitada sem diminuição de velocidade.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SPEED TEST SIMULATOR SECTION -->
+    <section id="teste-velocidade" class="py-20 bg-brand-navy text-white relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <span class="text-brand-red font-bold uppercase text-xs tracking-widest bg-white/10 px-3 py-1 rounded-full">Simulador de Desempenho</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold mt-3">Teste a Estabilidade da Fibra ML NET</h2>
+            <p class="text-slate-300 text-sm max-w-xl mx-auto mt-2">Simule o teste de conexão de ultravelocidade com nossos servidores de cache locais.</p>
+
+            <div class="mt-10 bg-white/5 border border-white/15 p-8 rounded-3xl max-w-md mx-auto backdrop-blur-md shadow-2xl">
+                <!-- Gauge Visual SVG -->
+                <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        <!-- Gauge Background track -->
+                        <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" />
+                        <!-- Gauge Active path -->
+                        <circle id="gauge-path" class="gauge-circle" cx="50" cy="50" r="40" stroke="#DC2628" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span id="speed-counter" class="text-4xl font-black">0</span>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">MEGA Mbps</span>
+                    </div>
+                </div>
+
+                <!-- Live Ping & Upload readout -->
+                <div class="grid grid-cols-2 gap-4 my-6 text-xs text-slate-300 border-t border-white/10 pt-4">
+                    <div>
+                        <span class="block text-slate-400">Latência (Ping):</span>
+                        <strong id="ping-val" class="text-white text-base font-bold">-- ms</strong>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400">Upload Estimado:</span>
+                        <strong id="upload-val" class="text-white text-base font-bold">-- Mbps</strong>
+                    </div>
+                </div>
+
+                <button id="btn-start-test" onclick="runSpeedTest()" class="w-full py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-extrabold text-sm shadow-lg hover:shadow-glow-red transition">
+                    Iniciar Teste de Conexão
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS & FAQ SECTION -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- TESTIMONIALS -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-brand-red font-bold uppercase text-xs tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Depoimentos de Clientes</span>
+                <h2 class="text-3xl font-extrabold text-brand-navy mt-3">Quem Assina, Recomenda</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-20">
+                <!-- TESTIMONIAL 1 -->
+                <div class="bg-brand-bgLight p-6 rounded-2xl border border-slate-200/80">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm italic mb-4">"Trabalho em home office com chamadas de vídeo o dia todo. Mudei para o plano de 700 Mega da ML NET e nunca mais tive travamentos."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-navy text-white font-bold flex items-center justify-center text-sm">
+                            LC
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-navy">Lucas Carvalho</h4>
+                            <span class="text-[11px] text-slate-400">Cliente em Araguaína - TO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TESTIMONIAL 2 -->
+                <div class="bg-brand-bgLight p-6 rounded-2xl border border-slate-200/80">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm italic mb-4">"Para quem joga online o ping baixo é essencial. A ML NET entrega exatamente o prometido e o desconto de pontualidade é ótimo."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-red text-white font-bold flex items-center justify-center text-sm">
+                            MR
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-navy">Matheus Ribeiro</h4>
+                            <span class="text-[11px] text-slate-400">Gamer & Streamer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TESTIMONIAL 3 -->
+                <div class="bg-brand-bgLight p-6 rounded-2xl border border-slate-200/80">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm italic mb-4">"Atendimento nota 10! A instalação foi feita no dia seguinte da contratação. Recomendo de olhos fechados para toda a minha família."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-navy text-white font-bold flex items-center justify-center text-sm">
+                            AM
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-navy">Ana Maria Souza</h4>
+                            <span class="text-[11px] text-slate-400">Cliente Residencial</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ ACCORDION -->
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-extrabold text-brand-navy">Dúvidas Frequentes (FAQ)</h3>
+                </div>
+
+                <div class="space-y-3">
+                    <!-- FAQ 1 -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-bold text-brand-navy flex justify-between items-center hover:bg-slate-50 transition">
+                            <span>A instalação da internet é realmente gratuita?</span>
+                            <i class="fa-solid fa-chevron-down text-brand-red text-sm transition-transform duration-200"></i>
+                        </button>
+                        <div class="faq-answer hidden px-6 pb-4 text-slate-600 text-xs sm:text-sm">
+                            Sim! A instalação e a disponibilização do roteador em regime de comodato são 100% gratuitas para os contratos com permanência mínima de 12 meses.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-bold text-brand-navy flex justify-between items-center hover:bg-slate-50 transition">
+                            <span>Como funciona o desconto por pontualidade?</span>
+                            <i class="fa-solid fa-chevron-down text-brand-red text-sm transition-transform duration-200"></i>
+                        </button>
+                        <div class="faq-answer hidden px-6 pb-4 text-slate-600 text-xs sm:text-sm">
+                            Realizando o pagamento do seu boleto ou fatura Pix até a data limite de vencimento, o sistema concede automaticamente um desconto de R$ 10,00 no valor total da mensalidade.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-bold text-brand-navy flex justify-between items-center hover:bg-slate-50 transition">
+                            <span>Qual o prazo para instalação após a contratação?</span>
+                            <i class="fa-solid fa-chevron-down text-brand-red text-sm transition-transform duration-200"></i>
+                        </button>
+                        <div class="faq-answer hidden px-6 pb-4 text-slate-600 text-xs sm:text-sm">
+                            Após a confirmação dos dados do cadastro, nossa equipe técnica agenda a instalação em até 24 a 48 horas úteis, conforme a disponibilidade de agenda da sua região.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CUSTOMER CENTRAL QUICK LINK SECTION -->
+    <section id="central" class="py-12 bg-gradient-to-r from-brand-navy to-brand-navyDark text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-brand-red flex items-center justify-center text-white text-2xl shadow-lg">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold">Precisa emitir a 2ª via da sua fatura?</h3>
+                    <p class="text-xs text-slate-300">Acesse a Central do Assinante ML NET de forma rápida usando seu CPF.</p>
+                </div>
+            </div>
+            <a href="https://wa.me/5563900000000?text=Ol%C3%A1%2C%20preciso%20da%202a%20via%20da%20minha%20fatura" target="_blank" class="px-6 py-3.5 rounded-xl bg-white text-brand-navy font-extrabold text-sm hover:bg-slate-100 transition whitespace-nowrap shadow-md">
+                <i class="fa-brands fa-whatsapp text-emerald-600 text-base mr-1.5"></i> Emitir Fatura Via WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+                
+                <!-- BRAND INFO -->
+                <div class="lg:col-span-2 space-y-4">
+                    <a href="#" class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-brand-navy rounded-lg flex items-center justify-center text-white shadow">
+                            <svg class="w-5 h-5 text-brand-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                <line x1="12" y1="20" x2="12.01" y2="20" stroke-width="3"></line>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-extrabold text-white"><span class="text-white">ML</span><span class="text-brand-red">NET</span></span>
+                    </a>
+                    <p class="text-slate-400 max-w-sm leading-relaxed">
+                        Provedor de Internet em Fibra Óptica de alta performance. Oferecendo estabilidade, ultravelocidade e atendimento humano para residências e empresas.
+                    </p>
+                    <div class="flex space-x-3 text-base text-slate-300">
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:text-brand-red hover:bg-slate-700 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:text-brand-red hover:bg-slate-700 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:text-brand-red hover:bg-slate-700 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- LINKS 1 -->
+                <div>
+                    <h4 class="text-white font-bold uppercase tracking-wider mb-4">Navegação</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#inicio" class="hover:text-white transition">Início</a></li>
+                        <li><a href="#planos" class="hover:text-white transition">Planos Residenciais</a></li>
+                        <li><a href="#empresas" class="hover:text-white transition">Planos Empresariais</a></li>
+                        <li><a href="#monte-seu-plano" class="hover:text-white transition">Simulador de Planos</a></li>
+                    </ul>
+                </div>
+
+                <!-- LINKS 2 -->
+                <div>
+                    <h4 class="text-white font-bold uppercase tracking-wider mb-4">Atendimento</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#central" class="hover:text-white transition">2ª Via de Boleto</a></li>
+                        <li><a href="#central" class="hover:text-white transition">Central do Assinante</a></li>
+                        <li><a href="#teste-velocidade" class="hover:text-white transition">Teste de Velocidade</a></li>
+                        <li><a href="#" class="hover:text-white transition">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+
+                <!-- CONTACT INFO -->
+                <div>
+                    <h4 class="text-white font-bold uppercase tracking-wider mb-4">Contato</h4>
+                    <ul class="space-y-2.5 text-slate-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-brand-red"></i> 0800 591 2026</li>
+                        <li class="flex items-center gap-2"><i class="fa-brands fa-whatsapp text-emerald-500"></i> (63) 99200-0000</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-brand-red"></i> contato@mlnet.com.br</li>
+                        <li class="flex items-start gap-2 mt-2"><i class="fa-solid fa-location-dot text-brand-red mt-0.5"></i> Araguaína - TO</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500">
+                <p>&copy; 2026 ML NET Telecomunicações. Todos os direitos reservados.</p>
+                <p class="text-[11px]">Provedor Licenciado pela ANATEL.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP CTA BUTTON -->
+    <a href="https://wa.me/5563900000000?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20planos%20da%20ML%20NET" target="_blank" class="fixed bottom-6 right-6 z-50 bg-emerald-500 hover:bg-emerald-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition-transform duration-200 group">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span class="absolute right-16 bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
+            Fale conosco no WhatsApp
+        </span>
+    </a>
+
+    <!-- SUBSCRIPTION MODAL / CHECKOUT DRAWER -->
+    <div id="sub-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl animate-in fade-in duration-200">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-brand-red/10 text-brand-red flex items-center justify-center text-lg font-bold">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-extrabold text-brand-navy">Solicitação de Assinatura</h3>
+                    <p class="text-xs text-slate-500">Preencha abaixo para verificar viabilidade no seu endereço.</p>
+                </div>
+            </div>
+
+            <!-- Pre-selected Plan Summary Badge -->
+            <div class="bg-brand-bgLight p-3.5 rounded-2xl border border-slate-200 mb-6 flex justify-between items-center">
+                <div>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Plano Selecionado:</span>
+                    <strong id="modal-plan-title" class="text-brand-navy font-black text-lg">700 MEGA</strong>
+                </div>
+                <div class="text-right">
+                    <span class="text-brand-red font-black text-xl">R$ <span id="modal-plan-price">99,90</span></span>
+                    <span class="text-[10px] text-slate-500 block">/mês</span>
+                </div>
+            </div>
+
+            <form onsubmit="handleSubscriptionSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Seu Nome Completo:</label>
+                    <input type="text" required placeholder="Digite seu nome" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">WhatsApp / Telefone:</label>
+                    <input type="tel" required placeholder="(63) 99999-9999" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Endereço com Bairro:</label>
+                    <input type="text" required placeholder="Rua, Número e Bairro em Araguaína" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red">
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-extrabold text-sm shadow-lg hover:shadow-glow-red transition">
+                    <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Enviar Pedido via WhatsApp
+                </button>
+
+                <p class="text-[10px] text-slate-400 text-center">Ao enviar, você concorda em receber contato da nossa equipe de vendas.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // MOBILE MENU TOGGLE
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // PLAN CATEGORY SWITCHER (Residencial vs Empresarial)
+        function switchPlans(type) {
+            const btnRes = document.getElementById('btn-residencial');
+            const btnEmp = document.getElementById('btn-empresarial');
+            const gridRes = document.getElementById('grid-residencial');
+            const gridEmp = document.getElementById('grid-empresarial');
+
+            if (type === 'residencial') {
+                btnRes.className = "px-6 py-2.5 rounded-xl text-sm font-bold bg-brand-navy text-white shadow-md transition-all duration-200";
+                btnEmp.className = "px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:text-brand-navy transition-all duration-200";
+                gridRes.classList.remove('hidden');
+                gridEmp.classList.add('hidden');
+            } else {
+                btnEmp.className = "px-6 py-2.5 rounded-xl text-sm font-bold bg-brand-navy text-white shadow-md transition-all duration-200";
+                btnRes.className = "px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:text-brand-navy transition-all duration-200";
+                gridEmp.classList.remove('hidden');
+                gridRes.classList.add('hidden');
+            }
+        }
+
+        // QUICK COVERAGE CHECKER SIMULATION
+        function checkCoverage() {
+            const cepInput = document.getElementById('cep-input').value.trim();
+            const resultDiv = document.getElementById('coverage-result');
+            resultDiv.classList.remove('hidden');
+
+            if (!cepInput) return;
+
+            resultDiv.innerHTML = `<span class="text-amber-300"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Verificando disponibilidade da fibra em "${cepInput}"...</span>`;
+
+            setTimeout(() => {
+                resultDiv.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Excelente notícia! Cobertura 100% Fibra Óptica disponível para sua região!</span>`;
+            }, 1000);
+        }
+
+        // INTERACTIVE PLAN BUILDER LOGIC
+        let customBaseSpeed = 500;
+        let customBasePrice = 89.90;
+
+        function setCustomSpeed(speed, price, btnElement) {
+            customBaseSpeed = speed;
+            customBasePrice = price;
+
+            document.querySelectorAll('.custom-speed-btn').forEach(btn => {
+                btn.className = "custom-speed-btn p-3 sm:p-4 rounded-xl border border-white/20 hover:border-white/40 bg-white/5 text-center transition";
+            });
+
+            btnElement.className = "custom-speed-btn active p-3 sm:p-4 rounded-xl border-2 border-brand-red bg-white/10 text-center transition";
+            calculateCustomTotal();
+        }
+
+        function calculateCustomTotal() {
+            let total = customBasePrice;
+            const checkboxes = document.querySelectorAll('.sva-addon:checked');
+            checkboxes.forEach(cb => {
+                total += parseFloat(cb.value);
+            });
+
+            document.getElementById('custom-total-price').innerText = total.toFixed(2).replace('.', ',');
+        }
+
+        function subscribeCustomPlan() {
+            const selectedAddons = [];
+            document.querySelectorAll('.sva-addon:checked').forEach(cb => {
+                selectedAddons.push(cb.getAttribute('data-name'));
+            });
+
+            const title = `${customBaseSpeed}M Customizado ${selectedAddons.length ? '(' + selectedAddons.join(', ') + ')' : ''}`;
+            const price = document.getElementById('custom-total-price').innerText;
+
+            openModal(title, price);
+        }
+
+        // SPEED TEST SIMULATOR
+        function runSpeedTest() {
+            const counter = document.getElementById('speed-counter');
+            const gauge = document.getElementById('gauge-path');
+            const ping = document.getElementById('ping-val');
+            const upload = document.getElementById('upload-val');
+            const btn = document.getElementById('btn-start-test');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Testando Conexão...`;
+
+            let currentSpeed = 0;
+            const targetSpeed = 742; // Simulated speed value
+
+            const interval = setInterval(() => {
+                currentSpeed += Math.floor(Math.random() * 45) + 15;
+                if (currentSpeed >= targetSpeed) {
+                    currentSpeed = targetSpeed;
+                    clearInterval(interval);
+
+                    // Finalize display
+                    ping.innerText = "6 ms";
+                    upload.innerText = "680 Mbps";
+                    btn.disabled = false;
+                    btn.innerText = "Refazer Teste de Velocidade";
+                }
+
+                counter.innerText = currentSpeed;
+                // Calculate circle stroke dashoffset (251.2 is max)
+                const offset = 251.2 - (251.2 * (currentSpeed / 1000));
+                gauge.style.strokeDashoffset = offset;
+            }, 60);
+        }
+
+        // FAQ ACCORDION TOGGLE
+        function toggleFaq(btn) {
+            const answer = btn.nextElementSibling;
+            const icon = btn.querySelector('.fa-chevron-down');
+
+            answer.classList.toggle('hidden');
+            if (icon) {
+                icon.classList.toggle('rotate-180');
+            }
+        }
+
+        // SUBSCRIPTION MODAL CONTROLS
+        function openModal(planTitle, planPrice) {
+            document.getElementById('modal-plan-title').innerText = planTitle;
+            document.getElementById('modal-plan-price').innerText = planPrice;
+            document.getElementById('sub-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('sub-modal').classList.add('hidden');
+        }
+
+        function handleSubscriptionSubmit(e) {
+            e.preventDefault();
+            const planTitle = document.getElementById('modal-plan-title').innerText;
+            const planPrice = document.getElementById('modal-plan-price').innerText;
+
+            alert(`Solicitação para o plano ${planTitle} (R$ ${planPrice}) enviada com sucesso! Redirecionando para o WhatsApp da equipe comercial...`);
+            closeModal();
+        }
+    </script>
+</body>
+</html>
